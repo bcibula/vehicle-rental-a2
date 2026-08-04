@@ -1,17 +1,14 @@
 package com.mcgill.vehicle_total_price_a2;
 
-// These lines bring in helper tools from Spring Boot framework that we need to run the application
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-// This special marker tells Spring Boot to automatically set up all the configuration we need
+// This application starts the Vehicle Total Price microservice.
+// This service calculates the final rental cost by combining the rental duration with the daily rate provided by the Vehicle Season Price service.
 @SpringBootApplication
-// This declares the main class for our Spring Boot application
 public class VehicleTotalPriceA2Application {
 
-	// This is the entry point - the first method that runs when you start the application
 	public static void main(String[] args) {
-		// This line starts up the Spring Boot application and gets it ready to receive requests
 		SpringApplication.run(VehicleTotalPriceA2Application.class, args);
 	}
 

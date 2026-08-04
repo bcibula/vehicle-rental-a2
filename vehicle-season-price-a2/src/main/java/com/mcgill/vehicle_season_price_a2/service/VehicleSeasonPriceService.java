@@ -9,15 +9,15 @@ import tools.jackson.databind.ObjectMapper;
 import java.io.InputStream;
 import java.util.List;
 
-// Calculates the total rental price.
-// It first requests the daily rate from the Vehicle Season Price service and then multiplies that rate by the number of rental days.
+// This service manages the vehicle pricing data used by the application.
+// It loads the seasonal pricing information from JSON and provides the daily rental rate requested by the controller.
 @Service
 public class VehicleSeasonPriceService {
 
     private List<VehiclePrice> vehiclePrices;
 
-    // Loads vehicle_season.json once after Spring creates this service.
-    // Jackson converts each JSON record into a VehiclePrice object.
+    // Loads the vehicle pricing data when the service starts.
+    // The JSON records are converted into VehiclePrice objects that can be searched during rental price requests.
     @PostConstruct
     public void loadData() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -25,8 +25,8 @@ public class VehicleSeasonPriceService {
         vehiclePrices = objectMapper.readValue(is, new TypeReference<List<VehiclePrice>>() {});
     }
 
-    // Normalizes the request values and searches the loaded pricing data.
-    // Returns the daily price for the matching vehicle and season.
+    // Finds the daily rental price for the requested vehicle type and season.
+    // Input values are normalized first so requests like "summer" and "SUMMER" match the same pricing data.
     public Integer getPrice(String vehicleType, String season){
         String normalizedVehicle = normalize(vehicleType);
         String normalizedSeason = normalize(season);
@@ -39,8 +39,8 @@ public class VehicleSeasonPriceService {
         return null;
     }
 
-    // Converts input such as "SUMMER" or "summer" to "Summer"
-    // so it matches the names used in the JSON pricing data.
+    // Converts user input into the format used by the JSON pricing data.
+    // This allows the service to handle different capitalization styles.
     private String normalize(String input) {
         if (input == null || input.isEmpty()) {
             return input;

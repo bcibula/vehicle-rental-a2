@@ -11,28 +11,29 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-// This controller receives a vehicle type and season from the request.
-// It asks VehicleSeasonPriceService for the daily rental price and then returns either the pricing details or a 404 response.
+// This controller handles requests for vehicle rental prices.
+// It receives a vehicle type and season, asks the service layer for the matching daily rate, and returns the result as a JSON response.
 @RestController
 public class VehicleSeasonPriceController {
 
     @Autowired
     private VehicleSeasonPriceService service;
 
-    // The port is included in the response.
+    // The configured server port is included in the response so it is clear which service instance handled the request.
     @Value("${server.port}")
     private String port;
 
-    // This endpoint returns the daily price for a vehicle in a given season.
+    // This endpoint returns the daily rental price for a vehicle in a specific season.
     @GetMapping("/price")
     public ResponseEntity<Map<String, Object>> getPrice(
             @RequestParam String vehicle,
             @RequestParam String season) {
 
-        // Ask the service layer to find the price.
+        // The controller delegates the pricing lookup to the service layer.
+        // The service contains the logic for finding the correct seasonal rate.
         Integer dailyRate = service.getPrice(vehicle, season);
 
-        // If no price is found, send back a 404 error and a simple message.
+        // If the requested vehicle or season does not exist in the pricing data, return a 404 response instead of returning an invalid price.
         if (dailyRate == null) {
             Map<String, Object> error = new LinkedHashMap<>();
             error.put("error", "No pricing found for vehicle: " + vehicle + " in season: " + season);
@@ -40,7 +41,8 @@ public class VehicleSeasonPriceController {
             return ResponseEntity.status(404).body(error);
         }
 
-        // If a price is found, build a response with the details.
+        // Build the JSON response returned to the client.
+        // Include the request details, daily rate, and service port.
         Map<String, Object> response = new LinkedHashMap<>();
         response.put("vehicle", vehicle);
         response.put("season", season);
@@ -49,8 +51,6 @@ public class VehicleSeasonPriceController {
 
         return ResponseEntity.ok(response);
 
-
     }
-
 
 }
