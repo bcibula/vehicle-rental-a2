@@ -4,15 +4,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.config.server.EnableConfigServer;
 
-// Tells Spring this app is a Config Server, which serves settings to other apps.
+// This application provides centralized configuration for the two vehicle-pricing microservices.
+// When each service starts, it connects to the Config Server and retrieves its assigned port number.
+// Vehicle Total Price also retrieves the URL for Vehicle Season Price.
 @EnableConfigServer
-// Tells Spring Boot to auto-set up the app and start everything it needs.
 @SpringBootApplication
 public class ConfigServerA2Application {
 
-	// This is the main starting point when you run the program.
 	public static void main(String[] args) {
-		// Starts the Spring Boot application.
 		SpringApplication.run(ConfigServerA2Application.class, args);
 	}
 
